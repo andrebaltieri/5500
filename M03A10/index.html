@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bower_components/toastr/toastr.min.css"/>
+    <style>
+        .todo-true{
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body>
+
+<div ng-controller="HomeController" class="container">
+
+    <div class="alert alert-success" ng-show="remaining() == 0">
+        <strong>Parabéns</strong>, você concluiu todas suas tarefas
+    </div>
+    <div class="alert alert-warning"
+         ng-hide="remaining() == 0"
+         ng-show="remaining() > 0 && remaining() < todos.length">
+        <strong>Opa</strong>, primeiro, faça suas tarefas
+    </div>
+    <div class="alert alert-danger"
+         ng-show="remaining() == todos.length">
+        <strong>Quer isso?</strong>, você não fez nenhuma tarefa?
+    </div>
+    <h3 class="text-center" ng-if="remaining() > 0">{{ remaining() }} tarefa(s) restantes</h3>
+    <ul>
+        <li ng-repeat="todo in todos">
+            <span class="todo-{{ todo.done }}">{{ todo.text }}</span>
+            -
+            <input type="checkbox" ng-model="todo.done"/>
+            -
+            <span class="label"
+                  ng-class="{ 'label-success': todo.done, 'label-danger': !todo.done }">
+                {{ todo.text }}
+            </span>
+        </li>
+    </ul>
+    <br/>
+
+</div>
+
+
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../bower_components/toastr/toastr.min.js"></script>
+
+<script src="../bower_components/angular/angular.min.js"></script>
+<script>
+    angular.module('app', []);
+    var app = angular.module('app');
+
+    app.controller('HomeController', function ($scope) {
+        $scope.todos = [
+            {text: 'Tarefa 1', done: true},
+            {text: 'Tarefa 2', done: false},
+            {text: 'Tarefa 3', done: false},
+            {text: 'Tarefa 4', done: true}
+        ];
+
+        $scope.remaining = function () {
+            var count = 0;
+
+            angular.forEach($scope.todos, function (item) {
+                count += item.done ? 0 : 1;
+            });
+
+            return count;
+        }
+    });
+</script>
+</body>
+</html>

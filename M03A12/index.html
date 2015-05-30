@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html ng-app="app" ng-controller="TodoController">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>TODO List</title>
+    <link rel="stylesheet" href="../bower_components/bootswatch/paper/bootstrap.min.css">
+    <link rel="stylesheet" href="../bower_components/toastr/toastr.min.css"/>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+<body>
+<div ng-include="'header.html'"></div>
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th class="text-center col-md-1">#</th>
+            <th class="text-center"><a href="#" ng-click="ordenar('text')">Tarefa</a></th>
+            <th class="text-center col-md-1"><a href="#" ng-click="ordenar('done')">Status</a></th>
+            <th class="text-center col-md-1"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td colspan="3">
+                <input type="text" class="form-control" ng-model="todo.text" placeholder="Nova tarefa"/>
+            </td>
+            <td class="text-center">
+                <button class="btn btn-success" ng-click="adicionar()">Adicionar</button>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <input type="text"
+                       class="form-control"
+                       placeholder="Filtrar por tarefa"
+                       ng-model="filter"/>
+            </td>
+        </tr>
+        <tr ng-repeat="todo in todos | filter: filter | orderBy: order">
+            <td class="text-center">{{ todo.id }}</td>
+            <td>{{ todo.text }}</td>
+            <td class="text-center"><input type="checkbox" ng-model="todo.done"/></td>
+            <td class="text-center">
+                <button class="btn btn-sm btn-danger" ng-click="remover(todo)">
+                    <i class="fa fa-remove"></i> Remover
+                </button>
+            </td>
+        </tr>
+        </tbody>
+        <tfooter>
+            <tr>
+                <td colspan="4" class="text-right">
+                    <strong>{{ remaining() }} tarefa(s) restante(s)</strong>
+                </td>
+            </tr>
+        </tfooter>
+    </table>
+
+    <p class="text-center">
+        <button class="btn btn-info" ng-click="salvar()"><i class="fa fa-save"></i> Salvar</button>
+    </p>
+</div>
+
+
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="../bower_components/toastr/toastr.min.js"></script>
+<script src="../bower_components/angular/angular.min.js"></script>
+
+<script>
+    angular.module('app', []);
+    var app = angular.module('app');
+
+    app.controller('TodoController', function ($scope) {
+        $scope.theme = 'paper';
+        $scope.order = 'text';
+        $scope.todo = {id: 0, text: '', done: false};
+        $scope.todos = [];
+
+        carregaTodos();
+
+        $scope.remover = function (todo) {
+            var index = $scope.todos.indexOf(todo);
+            $scope.todos.splice(index, 1);
+        };
+
+        $scope.adicionar = function (){
+            $scope.todo.id = $scope.todos.length;
+            $scope.todos.push($scope.todo);
+            $scope.todo = {id: 0, text: '', done: false};
+        };
+
+        $scope.ordenar = function (ordenacao) {
+            $scope.order = ordenacao;
+        };
+
+        $scope.remaining = function () {
+            var count = 0;
+
+            angular.forEach($scope.todos, function (item) {
+                count += item.done ? 0 : 1;
+            });
+
+            return count;
+        };
+
+        $scope.trocaTema = function (tema) {
+            console.log(tema);
+        };
+
+        $scope.salvar = function(){
+            var data = angular.toJson($scope.todos);
+            localStorage.setItem('todos', data);
+            //sessionStorage.setItem('todos', data);
+
+            toastr.success('Dados salvos com sucesso!', 'Sucesso!')
+        };
+
+        function carregaTodos(){
+            var data = angular.fromJson(localStorage.getItem('todos'));
+            $scope.todos = data;
+            toastr.info('Aplicação carregada com sucesso!', 'Load completo')
+        }
+    });
+</script>
+</body>
+</html>

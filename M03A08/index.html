@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bower_components/toastr/toastr.min.css"/>
+</head>
+<body>
+
+<div ng-controller="HomeController" class="container">
+    <a href="#" ng-click="alertar()" class="btn btn-sm btn-primary">Alertar</a>
+    <br/>
+    <button ng-click="alertarMsg('Olá mundo')" class="btn btn-sm btn-primary">Alertar</button>
+</div>
+
+
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../bower_components/toastr/toastr.min.js"></script>
+
+<script src="../bower_components/angular/angular.min.js"></script>
+<script>
+    angular.module('app', []);
+    var app = angular.module('app');
+
+    app.controller('HomeController', function ($scope) {
+        $scope.alertar = function(){
+            toastr.info('Estou te alertando!', 'Informaçao');
+        };
+
+        $scope.alertarMsg = function(msg){
+            toastr.success(msg, 'Mensagem');
+        };
+    });
+</script>
+</body>
+</html>

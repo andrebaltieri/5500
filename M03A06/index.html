@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<div ng-controller="HomeController">
+    <h3>Nome: <input type="text" ng-model="user.name"/></h3>
+
+    <h3>Idade: {{ user.age }}</h3>
+
+    <h3>Cidade: {{ user.address.city }}</h3>
+
+    <h3>Estado: {{ user.address.state }}</h3>
+
+    <h3>Assinante: <input type="checkbox" ng-model="user.subscriber" /></h3>
+</div>
+
+
+<script src="../bower_components/angular/angular.min.js"></script>
+<script>
+    angular.module('app', []);
+    var app = angular.module('app');
+
+    app.controller('HomeController', function ($scope) {
+        $scope.user = {
+            name: "André Baltieri",
+            age: "29",
+            address: {
+                city: "Piracicaba",
+                state: "SP"
+            },
+            subscriber: false
+        };
+
+        console.log($scope.user);
+    });
+</script>
+</body>
+</html>
