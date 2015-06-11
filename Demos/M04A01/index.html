@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html ng-app="app" ng-controller="MainController">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Contacts Manager</title>
+    <link rel="stylesheet" href="../bower_components/bootswatch/paper/bootstrap.min.css">
+    <link rel="stylesheet" href="../bower_components/toastr/toastr.min.css"/>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+<body>
+<div ng-include="'header.html'"></div>
+<div class="container">
+    <div class="col-md-8">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th class="text-center">First Name</th>
+                <th class="text-center">Last Name</th>
+                <th class="text-center">Birthday</th>
+                <th class="text-center"><button class="btn btn-success btn-sm" ng-click="newContact()">NEW</button></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="c in contacts">
+                <td>{{ c.firstName }}</td>
+                <td>{{ c.lastName }}</td>
+                <td class="text-center">{{ c.birthday | date : 'dd/MM/yyyy' }}</td>
+                <td class="text-center">
+                    <div class="btn-group">
+                        <button class="btn btn-info btn-sm" ng-click="editContact(c)">EDIT</button>
+                        <button class="btn btn-danger btn-sm" ng-click="deleteContact(c)">DELETE</button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-md-4">
+        <br/>
+        <form>
+            <div class="form-group">
+                <label for="id">Unique Identifier</label>
+                <input type="text"  class="form-control" id="id" ng-model="contact.id" readonly>
+            </div>
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" class="form-control" id="firstName" ng-model="contact.firstName">
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" class="form-control" id="lastName" ng-model="contact.lastName">
+            </div>
+            <div class="form-group">
+                <label for="birthday">Birthday</label>
+                <input type="date" class="form-control" id="birthday" ng-model="contact.birthday">
+            </div>
+            <div class="form-group">
+                <label for="company">Company</label>
+                <select name="company" id="company" ng-model="contact.company" class="form-control">
+                    <option value="{{ company.id }}" ng-repeat="company in companies">{{ company.name }}</option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-default" ng-click="saveContact()">Salvar</button>
+        </form>
+    </div>
+</div>
+
+
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="../bower_components/toastr/toastr.min.js"></script>
+<script src="../bower_components/angular/angular.min.js"></script>
+
+<script>
+    angular.module('app', []);
+    var app = angular.module('app');
+
+    app.controller('MainController', function ($scope, $http, $filter) {
+        $scope.contact = {
+            id: '',
+            lastName: '',
+            birthday: new Date(),
+            firstName: '',
+            company: ''
+        };
+        $scope.contacts = [];
+        $scope.companies = [];
+
+        var username = 'bb387941-5321-4418-845c-92ae2f5ab238';
+        var password = 'df065242-fa6d-4834-bf92-e623a1d5608b';
+        var baseUrl = 'https://abt5500.apispark.net/v1/';
+        var header = {
+            headers: {
+                'Authorization': 'Basic ' + btoa(username + ':' + password)
+            }
+        };
+
+        getContacts();
+        getCompanies();
+
+        $scope.saveContact = function () {
+            if($scope.contact.id == ''){
+                postContact();
+            }else{
+                putContact();
+            }
+        };
+
+        $scope.newContact = function () {
+            newContact();
+        };
+
+        $scope.editContact = function (c) {
+            $scope.contact = {
+                id: c.id,
+                lastName: c.lastName,
+                birthday: new Date(c.birthday),
+                firstName: c.firstName,
+                company: c.company
+            };
+        };
+
+        $scope.deleteContact = function (c) {
+            $scope.contact = {
+                id: c.id,
+                lastName: c.lastName,
+                birthday: new Date(c.birthday),
+                firstName: c.firstName,
+                company: c.company
+            };
+            deleteContact();
+        };
+
+        function getContacts() {
+            $http.get(baseUrl + 'contacts', header)
+                    .success(function (data) {
+                        $scope.contacts = data;
+                        toastr.info('Customers loaded successfully', 'Success!');
+                    });
+        }
+
+        function getCompanies() {
+            $http.get(baseUrl + 'companies', header)
+                    .success(function (data) {
+                        $scope.companies = data;
+                        toastr.info('Companies loaded successfully', 'Success!');
+                    });
+        }
+
+        function postContact(){
+            $http.post(baseUrl + 'contacts', $scope.contact, header)
+                    .success(function (data) {
+                        $scope.contacts.push(data);
+                        newContact();
+                        toastr.success('Contact created successfully', 'Success!');
+                    });
+        }
+
+        function putContact(){
+            $http.put(baseUrl + 'contacts/' + $scope.contact.id, $scope.contact, header)
+                    .success(function (data) {
+                        var index = $scope.contacts.indexOf($scope.contact)
+                        $scope.contacts.splice(index, 1);
+                        $scope.contacts.push(data);
+                        newContact();
+                        toastr.success('Contact updated successfully', 'Success!');
+                    });
+        }
+
+        function deleteContact(){
+            $http.delete(baseUrl + 'contacts/' + $scope.contact.id, header)
+                    .success(function (data) {
+                        var index = $scope.contacts.indexOf($scope.contact)
+                        $scope.contacts.splice(index, 1);
+                        newContact();
+                        toastr.success('Contact deleted successfully', 'Success!');
+                    });
+        }
+
+        function newContact(){
+            $scope.contact = {
+                id: '',
+                lastName: '',
+                birthday: new Date(),
+                firstName: '',
+                company: ''
+            };
+        }
+    });
+</script>
+</body>
+</html>
