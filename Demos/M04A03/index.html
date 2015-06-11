@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html ng-app="app" ng-controller="MainController">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Contacts Manager</title>
+    <link rel="stylesheet" href="../bower_components/bootswatch/paper/bootstrap.min.css">
+    <link rel="stylesheet" href="../bower_components/toastr/toastr.min.css"/>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../bower_components/ngImgCrop/compile/minified/ng-img-crop.css"/>
+    <style>
+        .cropArea {
+            background: #E4E4E4;
+            overflow: hidden;
+            width: 500px;
+            height: 350px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h3 class="text-center">Formulários</h3>
+
+    <div class="col-md-8">
+        <form name="form" ng-submit="submit()" novalidate>
+            <div class="form-group"
+                 ng-class="{ 'has-error' : form.firstName.$invalid && form.firstName.$dirty }">
+                <label for="firstName">First Name</label>
+                <input type="text"
+                       class="form-control"
+                       id="firstName"
+                       name="firstName"
+                       ng-model="contact.firstName"
+                       ng-minlength="5"
+                       ng-maxlength="20"
+                       required>
+            </div>
+
+            <div class="form-group"
+                 ng-class="{ 'has-error' : form.lastName.$invalid && form.lastName.$dirty }">
+                <label for="lastName">Last Name</label>
+                <input type="text"
+                       class="form-control"
+                       id="lastName"
+                       name="lastName"
+                       ng-model="contact.lastName"
+                       ng-minlength="5"
+                       ng-maxlength="20"
+                       required>
+
+                <div class="alert alert-danger" ng-show="form.lastName.$invalid && form.lastName.$dirty">
+                    Last name must have 5~20 chars
+                </div>
+            </div>
+
+            <div class="form-group"
+                 ng-class="{ 'has-error' : form.phone.$invalid && form.phone.$dirty }">
+                <label for="phone">Phone</label>
+                <input type="text"
+                       class="form-control"
+                       id="phone"
+                       name="phone"
+                       ng-minlength="14"
+                       ng-model="contact.phone"
+                       ui-br-phone-number
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="image">Image</label>
+                <input type="file" name="image" id="image" class="form-control" />
+            </div>
+            <div class="form-group">
+                <div class="col-md-8">
+                    <div class="cropArea">
+                        <img-crop image="contact.image" result-image="croppedImage"></img-crop>
+                    </div>
+                </div>
+                <div class="col-md4 text-center">
+                    <div><img ng-src="{{ croppedImage }}" /></div>
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <button type="submit"
+                    class="btn btn-default"
+                    ng-disabled="form.$invalid">Save
+            </button>
+        </form>
+    </div>
+
+    <div class="col-md4">
+        <ul class="text-danger" ng-show="form.$invalid && form.$dirty">
+            <li ng-show="form.firstName.$invalid && form.firstName.$dirty">First name is Invalid</li>
+            <li ng-show="form.lastName.$invalid && form.lastName.$dirty">Last name is invalid</li>
+        </ul>
+    </div>
+</div>
+
+
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="../bower_components/toastr/toastr.min.js"></script>
+<script src="../bower_components/angular/angular.min.js"></script>
+<script src="../bower_components/angular-input-masks/angular-input-masks-standalone.min.js"></script>
+<script src="../bower_components/ngImgCrop/compile/minified/ng-img-crop.js"></script>
+
+<script>
+    angular.module('app', ['ui.utils.masks', 'ngImgCrop']);
+    var app = angular.module('app');
+
+    app.controller('MainController', function ($scope) {
+        $scope.contact = {
+            lastName: '',
+            firstName: '',
+            email: '',
+            phone: '',
+            image: ''
+        };
+        $scope.croppedImage = '';
+
+        $scope.submit = function () {
+            toastr.success('Formulário submetido!', 'Sucesso!');
+            console.log($scope.contact);
+        }
+
+        var handleFileSelect = function (evt) {
+            var file = evt.currentTarget.files[0];
+            var reader = new FileReader();
+            reader.onload = function (evt) {
+                $scope.$apply(function ($scope) {
+                    $scope.contact.image = evt.target.result;
+                });
+            };
+            reader.readAsDataURL(file);
+        };
+        angular.element(document.querySelector('#image')).on('change', handleFileSelect);
+    });
+</script>
+</body>
+</html>
