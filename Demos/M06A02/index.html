@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html ng-app="app" ng-controller="MainController">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Factories</title>
+    <link rel="stylesheet" href="../bower_components/bootswatch/paper/bootstrap.min.css">
+    <link rel="stylesheet" href="../bower_components/toastr/toastr.min.css"/>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+<body>
+<br/><br/><br/>
+
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th class="text-center">First Name</th>
+            <th class="text-center">Last Name</th>
+            <th class="text-center">Birthday</th>
+            <th class="text-center">
+                <button class="btn btn-success btn-sm" ng-click="newContact()">NEW</button>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="c in contacts">
+            <td>{{ c.firstName }}</td>
+            <td>{{ c.lastName }}</td>
+            <td class="text-center">{{ c.birthday | date : 'dd/MM/yyyy' }}</td>
+            <td class="text-center">
+                <div class="btn-group">
+                    <button class="btn btn-info btn-sm" ng-click="editContact(c)">EDIT</button>
+                    <button class="btn btn-danger btn-sm" ng-click="deleteContact(c)">DELETE</button>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="../bower_components/toastr/toastr.min.js"></script>
+<script src="../bower_components/angular/angular.min.js"></script>
+<script src="../bower_components/angular-resource/angular-resource.min.js"></script>
+
+<script>
+    angular.module('app', ['ngResource']);
+    var app = angular.module('app');
+
+    app.controller('MainController', function ($scope, ContactRepository) {
+        $scope.contacts = [];
+
+        getContacts();
+
+        function getContacts() {
+            ContactRepository.get()
+                    .success(function (data) {
+                        console.log(data);
+                        $scope.contacts = data;
+                    });
+        }
+    });
+
+    app.factory('ContactRepository', function ($http) {
+        var service = {
+            get: get
+        };
+        return service;
+
+        function get() {
+            var username = 'bb387941-5321-4418-845c-92ae2f5ab238';
+            var password = 'df065242-fa6d-4834-bf92-e623a1d5608b';
+            $http.defaults.headers.common['Authorization'] = 'Basic ' + btoa(username + ':' + password);
+            return $http.get('https://abt5500.apispark.net/v1/contacts/');
+        }
+    });
+</script>
+</body>
+</html>

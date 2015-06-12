@@ -1,0 +1,57 @@
+<html ng-app="app">
+
+<head>
+    <title>AngularJS Directive For Email</title>
+    <link rel="stylesheet" href="http://bootswatch.com/paper/bootstrap.min.css">
+</head>
+
+<body>
+
+<div class="container" ng-controller="HomeCtrl">
+    <form action="#" name="form" method="post">
+        <h3 class="text-center">Validação de E-mail</h3>
+        <ab-input-email></ab-input-email>
+        <div class="clearfix"></div>
+        <p class="text-center">
+            <input type="submit" class="btn btn-primary" value="Cadastrar">
+        </p>
+    </form>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.12/angular.min.js"></script>
+<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script>
+<script src="../bower_components/angular-gravatar/build/angular-gravatar.js"></script>
+<script>
+    angular.module('app', ['ui.gravatar']);
+
+    angular.module('app').controller('HomeCtrl', function ($scope) {
+
+    });
+
+    angular.module('app').directive('abInputEmail', function () {
+        var directive = {
+            templateUrl: 'input-email.html',
+            restrict: 'E',
+            require: '^form',
+            scope: {
+                id: "@id",
+                ngModel: "=ngModel"
+            },
+            link: link
+        };
+        return directive;
+        function link(scope, el, attr, ctrl) {
+            scope.email = "";
+            scope.verifyEmail = function () {
+                if (scope.email == 'andrebaltieri@hotmail.com') {
+                    alert('E-mail válido!');
+                } else {
+                    alert('E-mail inválido');
+                }
+            }
+        }
+    });
+</script>
+</body>
+
+</html>
