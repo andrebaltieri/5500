@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html ng-app="app" ng-controller="MainController">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Contacts Manager</title>
+    <link rel="stylesheet" href="../bower_components/bootswatch/paper/bootstrap.min.css">
+    <link rel="stylesheet" href="../bower_components/toastr/toastr.min.css"/>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="container">
+    <my-contact-badge></my-contact-badge>
+    <br/>
+    <div class="clearfix"></div>
+    <my-contact-badge-ext></my-contact-badge-ext>
+    <div class="clearfix"></div>
+    <div class="row">
+        <my-contact-badge-generic
+                contact="c"
+                ng-repeat="c in contacts"/>
+    </div>
+</div>
+
+
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../bower_components/toastr/toastr.min.js"></script>
+<script src="../bower_components/angular/angular.min.js"></script>
+
+<script>
+    angular.module('app', []);
+    var app = angular.module('app');
+
+    app.controller('MainController', function ($scope) {
+        $scope.contact = {
+            firstName: 'André',
+            lastName: 'Baltieri'
+        };
+        $scope.contacts = [
+            {firstName: 'André', lastName: 'Baltieri'},
+            {firstName: 'Bruce', lastName: 'Wayne'},
+            {firstName: 'Peter', lastName: 'Parker'}
+        ];
+    });
+
+    // my-contact-badge
+    app.directive('myContactBadge', function () {
+        return {
+            template: '<div class="col-md-4 well">First Name: {{ contact.firstName }} <br/> Last Name: {{ contact.lastName }}</div>'
+        };
+    });
+
+    // my-contact-badge-ext
+    app.directive('myContactBadgeExt', function () {
+        return {
+            templateUrl: 'my-contact-badge.html'
+        };
+    });
+
+    app.directive("myContactBadgeGeneric", function () {
+        return {
+            templateUrl: 'my-contact-badge.html',
+            scope: {
+                contact: '='
+            }
+        }
+    });
+</script>
+</body>
+</html>

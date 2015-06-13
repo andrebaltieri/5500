@@ -50,7 +50,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <script src="../bower_components/toastr/toastr.min.js"></script>
 <script src="../bower_components/angular/angular.min.js"></script>
-<script src="../bower_components/angular-resource/angular-resource.min.js"></script>
+<script src="../bower_components/angular-cookie/angular-cookie.min.js"></script>
 
 <script>
     angular.module('app', []);
@@ -79,8 +79,13 @@
                         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
                     })
                     .success(function (data) {
+                        console.log(data);
                         $scope.isAuthenticated = true;
+
                         $scope.token = data.access_token;
+                        localStorage.setItem('token', data.access_token);
+                        sessionStorage.setItem('token', data.access_token);
+                        //$cookie.set('token', data.access_token);
                     })
                     .error(function (data) {
                         toastr.error(data.error_description, 'Falha ao autenticar');
@@ -88,7 +93,12 @@
         }
 
         function getUsers() {
-            $http.get('http://localhost:12295/api/customers', {headers: {'Authorization': 'Bearer ' + $scope.token}})
+            var token = $scope.token;
+//            token = localStorage.getItem('token');
+//            token = sessionStorage.getItem('token');
+//            token = $cookie.get('token');
+
+            $http.get('http://localhost:12295/api/customers', {headers: {'Authorization': 'Bearer ' + token}})
                     .success(function (data) {
                         console.log(data);
                         toastr.success(data.length + ' usuários encontrados!', 'Sucesso');

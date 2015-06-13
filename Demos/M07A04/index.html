@@ -27,23 +27,26 @@
 
     <div class="clearfix"></div>
 
-    <h3 class="text-center">Status</h3>
+    <div ng-show="isAuthenticated">
+        <h3 class="text-center">Status</h3>
 
-    <dl>
-        <dt><strong>Autenticado</strong></dt>
-        <dd>{{ isAuthenticated }}</dd>
+        <dl>
+            <dt><strong>Autenticado</strong></dt>
+            <dd>{{ isAuthenticated }}</dd>
 
-        <dt>Token</dt>
-        <dd>{{ token }}</dd>
-    </dl>
+            <dt>Token</dt>
+            <dd>{{ token }}</dd>
+        </dl>
 
-    <br/>
+        <br/>
 
-    <div class="clearfix"></div>
+        <div class="clearfix"></div>
 
-    <p class="text-center">
-        <button class="btn btn-default" ng-click="getUsers()">Listar Usuários</button>
-    </p>
+        <p class="text-center">
+            <button class="btn btn-default" ng-click="getUsers()">Listar Usuários</button>
+        </p>
+    </div>
+
 </div>
 
 
