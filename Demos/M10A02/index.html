@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/css/materialize.min.css">
+</head>
+<body>
+
+<div class="navbar-fixed">
+    <nav>
+        <div class="nav-wrapper blue darken-1">
+            <a href="#/" class="brand-logo center thin stationery">aspnet{conf}</a>
+        </div>
+    </nav>
+</div>
+
+<main>
+    <div>
+        <br>
+
+        <div class="row">
+            <form class="col s12">
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input placeholder="Placeholder" id="first_name" type="text" class="validate">
+                        <label for="first_name">First Name</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input id="last_name" type="text" class="validate">
+                        <label for="last_name">Last Name</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input disabled value="I am not editable" id="disabled" type="text" class="validate">
+                        <label for="disabled">Disabled</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="password" type="password" class="validate">
+                        <label for="password">Password</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="email" type="email" class="validate">
+                        <label for="email">Email</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+        <a class="btn-floating btn-large red">
+            <i class="large mdi-action-launch"></i>
+        </a>
+        <ul>
+            <li>
+                <a href="#/nova" class="btn-floating red"><i class="large mdi-action-announcement"></i></a>
+            </li>
+            <li>
+                <a href="#/mensagens" class="btn-floating red"><i class="large mdi-action-list"></i></a>
+            </li>
+            <li>
+                <a href="#/palestrantes" class="btn-floating yellow darken-1"><i class="large mdi-action-assignment-ind"></i></a>
+            </li>
+        </ul>
+    </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/js/materialize.min.js"></script>
+</body>
+</html>

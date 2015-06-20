@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>TODO List</title>
+    <link rel="stylesheet" href="../bower_components/bootswatch/paper/bootstrap.min.css">
+    <link rel="stylesheet" href="../bower_components/toastr/toastr.min.css"/>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+<body>
+<div ng-include="'header.html'"></div>
+<div ng-show="isPageBusy">Loading</div>
+<div class="container" ng-hide="isPageBusy">
+    <div ng-controller="ModalDemoCtrl">
+        <script type="text/ng-template" id="myModalContent.html">
+            <div class="modal-header">
+                <h3 class="modal-title">I'm a modal!</h3>
+            </div>
+            <div class="modal-body">
+                <ul>
+                    <li ng-repeat="item in items">
+                        <a ng-click="selected.item = item">{{ item }}</a>
+                    </li>
+                </ul>
+                Selected: <b>{{ selected.item }}</b>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="ok()">OK</button>
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            </div>
+        </script>
+
+        <button class="btn btn-default" ng-click="open()">Open me!</button>
+        <div ng-show="selected">Selection from a modal: {{ selected }}</div>
+    </div>
+</div>
+
+
+<script src="../bower_components/angular/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
+
+<script>
+    angular.module('app', ['ui.bootstrap']);
+    var app = angular.module('app');
+
+    app.controller('ModalDemoCtrl', function ($scope, $modal) {
+
+        $scope.items = ['item1', 'item2', 'item3'];
+        $scope.animationsEnabled = true;
+        $scope.selected = '';
+
+        $scope.open = function () {
+            // Inicia o Loading...
+            var modalInstance = $modal.open({
+                animation: $scope.animationsEnabled,
+                templateUrl: 'myModalContent.html',
+                controller: 'ModalInstanceCtrl',
+                size: 'lg',
+                resolve: {
+                    items: function () {
+                        return $scope.items;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (selectedItem) {
+                // Finaliza o Loading...
+                $scope.selected = selectedItem;
+            }, function () {
+                //$log.info('Modal dismissed at: ' + new Date());
+            });
+        };
+
+        $scope.toggleAnimation = function () {
+            $scope.animationsEnabled = !$scope.animationsEnabled;
+        };
+
+    });
+
+    app.controller('ModalInstanceCtrl', function ($scope, $modalInstance, items) {
+        $scope.items = items;
+        $scope.selected = {
+            item: $scope.items[0]
+        };
+
+        $scope.ok = function () {
+            $modalInstance.close($scope.selected.item);
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+    });
+</script>
+</body>
+</html>
